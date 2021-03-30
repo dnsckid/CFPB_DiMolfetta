@@ -1,0 +1,109 @@
+---
+title: "FlexDashboard MD"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(plotly)
+complaints <- readRDS("~/Documents/Data Journalism 3.30/CFPB_DiMolfetta/complaints.rds")
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+# Time series of occurrences of "covid-19" in complaints
+
+p.type3 <- function(comp.data) {
+  comp.data %>%
+    filter(grepl('covid-19',consumer_complaint_narrative)) %>%
+    count(date_received)
+}
+
+p.type3(df)
+
+
+plot3 <- p.type3(df)
+
+plot_ly(data = plot3,
+             x = ~date_received,
+             y = ~n,
+             type = "scatter", mode = "lines"
+              
+) %>% 
+     layout(title = "Complaints Containing Covid-19",
+            xaxis = list(title = "Dates"),
+            yaxis = list(title = "Count of Occurences")
+)
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+# Tabulates companies whose consumer consent was NOT provided in a Timely Manner in NY State
+
+head(df)
+
+p.type2 <- function(comp.data) {
+  comp.data %>%
+    filter(consumer_consent_provided == "Consent not provided") %>%
+    filter(timely_response == "No") %>% 
+    filter(state =="NY") %>%
+    count(company)
+}
+
+p.type2(df)
+
+
+plot2 <- p.type2(df)
+
+plot_ly(data = plot2,
+             x = ~company,
+             y = ~n,
+             type = "bar"
+) %>% 
+     layout(title = "NY State Company Complaints Where Consumer Consent was NOT Provided In Timely Manner",
+            xaxis = list(title = "Company"),
+            yaxis = list(title = "Count of Occurences")
+)
+
+```
+
+### Chart C
+
+```{r}
+# Bar graph counting product types
+
+head(df)
+
+p.type1 <- function(comp.data) {
+  comp.data %>% 
+    count(product)
+}
+
+p.type1(df)
+
+
+plot1 <- p.type1(df)
+
+plot_ly(data = plot1,
+             x = ~product,
+             y = ~n,
+             type = "bar"
+) %>% 
+     layout(title = "Count of CFPB Complaints by Product Type",
+            xaxis = list(title = "Product Name"),
+            yaxis = list(title = "Count of Product Type")
+)
+```
+
