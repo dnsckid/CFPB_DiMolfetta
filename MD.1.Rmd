@@ -17,18 +17,38 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ```{r}
 
+library(tidyverse)
+library(plotly)
+
 df <- complaints
 head(df)
-
-
-
 
 ```
 
 ```{r}
+# Bar graph counting product types
+
+head(df)
+
+p.type1 <- function(comp.data) {
+  comp.data %>% 
+    count(product)
+}
+
+p.type1(df)
 
 
+plot1 <- p.type1(df)
 
+plot_ly(data = plot1,
+             x = ~product,
+             y = ~n,
+             type = "bar"
+) %>% 
+     layout(title = "Count of CFPB Complaints by Product Type",
+            xaxis = list(title = "Product Name"),
+            yaxis = list(title = "Count of Product Type")
+)
 
 ```
 
