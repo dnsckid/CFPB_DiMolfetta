@@ -52,4 +52,34 @@ plot_ly(data = plot1,
 
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+
+# Tabulates companies whose consumer consent was NOT provided in a Timely Manner in NY State
+
+head(df)
+
+p.type2 <- function(comp.data) {
+  comp.data %>%
+    filter(consumer_consent_provided == "Consent not provided") %>%
+    filter(timely_response == "No") %>% 
+    filter(state =="NY") %>%
+    count(company)
+}
+
+p.type2(df)
+
+
+plot2 <- p.type2(df)
+
+plot_ly(data = plot2,
+             x = ~company,
+             y = ~n,
+             type = "bar"
+) %>% 
+     layout(title = "NY State Company Complaints Where Consumer Consent was NOT Provided In Timely Manner",
+            xaxis = list(title = "Company"),
+            yaxis = list(title = "Count of Occurences")
+)
+
+```
+
